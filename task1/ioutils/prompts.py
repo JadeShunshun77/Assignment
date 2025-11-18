@@ -1,6 +1,5 @@
 from typing import Optional
 
-
 def ask_int(
     prompt: str,
     min_val: Optional[int] = None,
