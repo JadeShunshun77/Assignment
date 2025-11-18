@@ -17,11 +17,9 @@ from ioutils.prompts import ask_int, ask_yes_no
 
 
 class FlowerShop:
-
     def __init__(self):
         self.cash: float = STARTING_CASH
         self.inventory = Inventory()
-        # Convert config BouquetConfig objects into actual Bouquet instances
         self.bouquets: Dict[str, Bouquet] = {
             name: Bouquet(
                 name=cfg.name,
@@ -36,14 +34,17 @@ class FlowerShop:
         }
         self.florists: List[Florist] = []
 
+    # helpers
+
     def _florist_names(self) -> List[str]:
         return [f.name for f in self.florists]
 
-    # Hiring and firing
+    # hiring &  firing
 
     def hire_florists_interactive(self) -> None:
         current = len(self.florists)
         remaining_slots = MAX_FLORISTS - current
+
         if remaining_slots <= 0:
             print(f"You already have the maximum number of florists ({MAX_FLORISTS}).")
             return
@@ -101,12 +102,10 @@ class FlowerShop:
         )
 
         for _ in range(to_fire):
-            # Show numbered staff list
             print("Current staff:")
             for idx, f in enumerate(self.florists, start=1):
                 print(f"  {idx}. {f}")
 
-            # Choose one to remove
             choice = ask_int(
                 "Enter the number of the florist you want to remove: ",
                 min_val=1,
@@ -115,8 +114,7 @@ class FlowerShop:
             removed = self.florists.pop(choice - 1)
             print(f"Removed florist: {removed}")
 
-
-    # Labour & supply calculations
+    # labour & supplies
 
     def _available_labour_minutes(self) -> int:
         return sum(f.monthly_capacity_minutes() for f in self.florists)
@@ -138,13 +136,11 @@ class FlowerShop:
         return revenue
 
     def _required_labour_minutes(self, bouquet_plan: Dict[str, int]) -> int:
-        # 1. Base time (no specialities applied yet)
         base_minutes = 0
         for b_name, qty in bouquet_plan.items():
             bouquet = self.bouquets[b_name]
             base_minutes += qty * bouquet.time_minutes
 
-        # 2. Time saved thanks to speciality workers
         total_saving = 0.0
         if self.florists:
             for b_name, qty in bouquet_plan.items():
@@ -158,14 +154,9 @@ class FlowerShop:
                 bouquet = self.bouquets[b_name]
                 t = bouquet.time_minutes
 
-                # Total time capacity for specialists
-                total_spec_capacity = sum(f.monthly_capacity_minutes() for f in specialists)
-
-                # Number of bouquets they could make at half-time
-                max_discount_bouquets = total_spec_capacity / (t / 2.0)
+                spec_capacity = sum(f.monthly_capacity_minutes() for f in specialists)
+                max_discount_bouquets = spec_capacity / (t / 2.0)
                 discounted_bouquets = min(qty, int(max_discount_bouquets))
-
-                # Each discounted bouquet saves t/2 minutes
                 saving = discounted_bouquets * (t / 2.0)
                 total_saving += saving
 
@@ -175,7 +166,7 @@ class FlowerShop:
         return effective_minutes
 
     def _validate_bouquet_plan(self, bouquet_plan: Dict[str, int]) -> bool:
-        # Demand limits
+        # demand check
         for b_name, qty in bouquet_plan.items():
             if qty < 0:
                 print("Error: bouquet quantities cannot be negative.")
@@ -185,7 +176,7 @@ class FlowerShop:
                 print(f"Error: {b_name} exceeds demand ({qty} > {demand}).")
                 return False
 
-        # Supply limits
+        # stock check
         needed = self._supplies_needed_for_plan(bouquet_plan)
         if not self.inventory.enough_supplies(needed):
             print("Error: Not enough supplies in the greenhouse to make this plan.")
@@ -193,7 +184,7 @@ class FlowerShop:
             print("Supplies available:", self.inventory.stock)
             return False
 
-        # Labour limits
+        # labour check
         required_minutes = self._required_labour_minutes(bouquet_plan)
         available_minutes = self._available_labour_minutes()
         if required_minutes > available_minutes:
@@ -203,7 +194,7 @@ class FlowerShop:
 
         return True
 
-    # Vendor info
+    # vendors
 
     def _print_vendor_info(self) -> None:
         print("Supplier price information:")
@@ -214,7 +205,6 @@ class FlowerShop:
                 f"Daisies £{v.daisies}/bunch, "
                 f"Greenery £{v.greenery}/bunch"
             )
-
 
     def _estimate_restock_cost_for_vendor(self, vendor_idx: int) -> float:
         vendor = VENDORS[vendor_idx]
@@ -227,7 +217,7 @@ class FlowerShop:
                 total += need * unit_price
         return total
 
-    # Main monthly simulation
+    # main monthly loop
 
     def run_month(self, month_number: int) -> bool:
         print(f"Month: {month_number}")
@@ -235,32 +225,45 @@ class FlowerShop:
         print("First, review the number of staff, then decide how many bouquets to sell.")
         print(f"Current number of florists: {len(self.florists)}")
 
-        # Staff management option
-        change_staff = ask_yes_no("Do you want to change your florists this month? (y/n): ")
-
-        if change_staff:
+        # staff logic
+        if month_number == 1:
+            print("\nThis is your first month — you must hire florists before continuing.")
             self.hire_florists_interactive()
-            self.fire_florists_interactive()
-        else:
-            print("Skipping staff changes for this month.")
 
-        # Bouquet production planning
+            if len(self.florists) < MIN_FLORISTS:
+                print(f"You must have at least {MIN_FLORISTS} florist(s).")
+                self.hire_florists_interactive()
+        else:
+            change_staff = ask_yes_no("Do you want to change your florists this month? (y/n): ")
+            if change_staff:
+                self.hire_florists_interactive()
+                self.fire_florists_interactive()
+            else:
+                print("Skipping staff changes for this month.")
+
+        # bouquet planning
         print("How much of each bouquet would you like to sell?")
         bouquet_plan: Dict[str, int] = {}
         bouquet_names = list(self.bouquets.keys())
-        # Keep looping until the entire plan is valid
+
         while True:
             bouquet_plan.clear()
             for b_name in bouquet_names:
                 bouquet = self.bouquets[b_name]
                 demand = bouquet.demand
+
+                recipe_str = (
+                    f"[per bouquet: {bouquet.roses} roses, "
+                    f"{bouquet.daisies} daisies, "
+                    f"{bouquet.greenery} greenery]"
+                )
+
                 while True:
-                    prompt = f"{b_name} (0–{demand}): "
+                    prompt = f"{b_name} {recipe_str} (0–{demand}): "
                     qty = ask_int(prompt, min_val=0, max_val=demand)
                     bouquet_plan[b_name] = qty
 
                     need_this = bouquet.supplies_needed(qty)
-
                     total_need = self._supplies_needed_for_plan(bouquet_plan)
 
                     remaining = {
@@ -282,7 +285,6 @@ class FlowerShop:
                     if any(val < 0 for val in remaining.values()):
                         print("Error: this plan exceeds current greenhouse supplies.")
                         print("Please enter a smaller quantity for this bouquet.")
-
                         continue
 
                     break
@@ -297,23 +299,20 @@ class FlowerShop:
                 print(f"  Required by bouquet plan: {required_minutes} minutes")
                 print(f"  Remaining (unused) labour: {remaining_minutes} minutes")
                 print()
-                # --------------------------------
                 break
             else:
                 print("The chosen quantities violate inventory or labour constraints.")
                 print("Please re-enter your bouquet plan.")
 
-        # Beginning-of-month cash
+        # income & fixed costs
         start_cash = self.cash
 
-        # Revenue + supply deduction
         income = self._revenue_for_plan(bouquet_plan)
         self.cash += income
 
         supplies_needed = self._supplies_needed_for_plan(bouquet_plan)
         self.inventory.use_supplies(supplies_needed)
 
-        # Wages
         employee_costs = (
             len(self.florists)
             * HOURS_PER_FLORIST_PER_MONTH
@@ -321,48 +320,29 @@ class FlowerShop:
         )
         self.cash -= employee_costs
 
-        # Storage
         greenhouse_costs = self.inventory.monthly_storage_cost()
         self.cash -= greenhouse_costs
 
-        # Rent
         rent_cost = RENT_PER_MONTH
         self.cash -= rent_cost
 
-        # Check bankruptcy
         if self.cash < 0:
             print("The shop does not have enough cash to pay expenses.")
             print(f"End of month Cash Balance: £{self.cash:.2f}")
             print("The shop is bankrupt. Simulation ends.")
             return False
 
-        # Depreciation
         self.inventory.apply_depreciation()
 
-        #  Status summary
-        print("End of month calculations: ")
-        print(f"Cash Balance, Month Start: £{start_cash}")
-        print(f" Income: £ {income}")
-        print(" Outgoings:")
-        print(f" Employee costs: £ {employee_costs}")
-        print(f" Greenhouse costs: £ {greenhouse_costs}")
-        print(f" Rent: £ {rent_cost}")
-        print("Current shop status:")
-        print(" Current staff:", self.florists)
-        print(" Greenhouse quantity: ")
-        print(self.inventory.status_string())
-
-        # Restocked
+        # restock
         print("The greenhouse has spare capacity and needs to be restocked...")
 
-        # 1) Estimate cost under each vendor
         cost_by_vendor = []
         for idx, vendor in VENDORS.items():
             est_cost = self._estimate_restock_cost_for_vendor(idx)
             cost_by_vendor.append(est_cost)
             print(f"  Option {idx}: {vendor.name}  → estimated restock cost £{est_cost:.2f}")
 
-        # 2) Choose vendor
         choice = ask_int(
             f"Choose a vendor for all supplies this month (0–{len(VENDORS) - 1}): ",
             min_val=0,
@@ -376,12 +356,42 @@ class FlowerShop:
             "greenery": chosen_vendor.greenery,
         }
 
-        # 3) Apply restock
         restock_cost = self.inventory.restock_to_full(prices)
         self.cash -= restock_cost
 
-        print(f" + Flower restock costs: £{restock_cost:.2f}")
-        print(f" End of month Cash Balance: £{self.cash:.2f}")
+        # monthly report
+        after_expenses = start_cash + income - employee_costs - greenhouse_costs - rent_cost
+
+        print("\n" + "=" * 60)
+        print(f"                 MONTHLY REPORT — Month {month_number}")
+        print("=" * 60)
+
+        print(f"{'Beginning Cash:':25} £ {start_cash:.2f}")
+        print(f"{'Revenue Earned:':25} £ {income:.2f}")
+        print("-" * 60)
+
+        print("EXPENSES")
+        print(f"  {'Wages:':23} £ {employee_costs:.2f}")
+        print(f"  {'Greenhouse Storage:':23} £ {greenhouse_costs:.2f}")
+        print(f"  {'Rent:':23} £ {rent_cost:.2f}")
+        print("-" * 60)
+
+        print(f"{'After Expenses:':25} £ {after_expenses:.2f}")
+        print(f"{'Restock Cost:':25} £ {restock_cost:.2f}")
+        print("-" * 60)
+        print(f"{'END OF MONTH BALANCE:':25} £ {self.cash:.2f}")
+        print("-" * 60)
+
+        print("STAFF")
+        print(f"  {'Florists employed:':23} {len(self.florists)}")
+        print(f"  {'List:':23} {self.florists}")
+        print("-" * 60)
+
+        print("GREENHOUSE STOCK")
+        print(f"  Roses:     {self.inventory.stock['roses']}")
+        print(f"  Daisies:   {self.inventory.stock['daisies']}")
+        print(f"  Greenery:  {self.inventory.stock['greenery']}")
+        print("=" * 60 + "\n")
 
         if self.cash < 0:
             print("The shop went bankrupt after restocking. Simulation ends.")
@@ -389,4 +399,3 @@ class FlowerShop:
 
         print("***********************************************************************")
         return True
-

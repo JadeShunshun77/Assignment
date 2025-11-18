@@ -15,7 +15,7 @@ def ask_int(
             if allow_empty and default is not None:
                 print(f"No input, using default value: {default}")
                 return default
-            print("Error: input cannot be empty. Please enter an integer.")
+            print("Error: input cannot be empty. Please enter an integer. ")
             continue
 
         try:

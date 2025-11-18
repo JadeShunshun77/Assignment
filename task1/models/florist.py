@@ -15,5 +15,5 @@ class Florist:
 
     def __repr__(self) -> str:
         if self.speciality:
-            return f"{self.name} (speciality: {self.speciality})"
+            return f"{self.name} (speciality:  {self.speciality})"
         return self.name

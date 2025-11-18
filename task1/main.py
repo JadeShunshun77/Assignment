@@ -8,7 +8,7 @@ def main() -> None:
     print("Welcome to the FlowerShop Simulator!")
     print("---------------------------------------------------------------")
 
-    # Ask how many months we should simulate (default: 6)
+    #  Ask how many months we should simulate (default: 6)
     months = ask_months_to_run(default_months=6)
     shop = FlowerShop()
 
