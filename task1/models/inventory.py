@@ -1,7 +1,12 @@
+# import math
+# from typing import Dict
+# from Assignment.task1 import config
+# models/inventory.py 顶部
+
 import math
 from typing import Dict
+import config  # 用 config.SUPPLY_CAPACITY 等
 
-import config
 
 
 class Inventory:

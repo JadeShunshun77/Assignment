@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from config import (
+from Assignment.task1.config import (
      BOUQUET_CONFIGS,
      VENDORS,
      STARTING_CASH,
@@ -10,10 +10,14 @@ from config import (
      MIN_FLORISTS,
      MAX_FLORISTS,
 )
-from models.bouquet import Bouquet
-from models.florist import Florist
-from models.inventory import Inventory
+from .bouquet import Bouquet
+from .florist import Florist
+from .inventory import Inventory
 from ioutils.prompts import ask_int, ask_yes_no
+
+
+
+
 
 
 class FlowerShop:

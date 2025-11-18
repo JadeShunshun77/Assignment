@@ -12,7 +12,7 @@ def main() -> None:
     months = ask_months_to_run(default_months=6)
     shop = FlowerShop()
 
-    # Run the simulation month by month
+    #  Run the simulation month by month
     for month in range(1, months + 1):
         alive = shop.run_month(month)
         if not alive:
