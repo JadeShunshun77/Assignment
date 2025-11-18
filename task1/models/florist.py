@@ -1,15 +1,19 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
 class Florist:
-    """
-    表示一个花匠。
-    Step 1 版本：先不考虑“专长”，只考虑人数和工时。
-    """
     name: str
+    speciality: Optional[str] = None
+
+    HOURS_PER_MONTH: int = 80
+    MINUTES_PER_HOUR: int = 60
 
     def monthly_capacity_minutes(self) -> int:
-        """返回该花匠每月可工作的总分钟数。"""
-        hours = 80
-        return hours * 60
+        return self.HOURS_PER_MONTH * self.MINUTES_PER_HOUR
+
+    def __repr__(self) -> str:
+        if self.speciality:
+            return f"{self.name} (speciality: {self.speciality})"
+        return self.name

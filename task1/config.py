@@ -1,54 +1,105 @@
-"""
-配置常量：容量、折旧、价格等。
-这些数据直接来自作业文档。
-"""
+from dataclasses import dataclass
+from typing import Dict
 
-RENT_PER_MONTH = 800.0
-STARTING_CASH = 7500.0
 
-MAX_FLORISTS = 4
-MIN_FLORISTS = 1
-HOURS_PER_FLORIST = 80
-WAGE_PER_HOUR = 15.50
+#Bouquet configuration
 
-# 温室容量
-GREENHOUSE_CAPACITY = {
+@dataclass(frozen=True)
+class BouquetConfig:
+    name: str
+    greenery: int
+    roses: int
+    daisies: int
+    time_minutes: int
+    price: float
+    demand: int
+
+
+BOUQUET_CONFIGS: Dict[str, BouquetConfig] = {
+    "Fern-tastic": BouquetConfig(
+        name="Fern-tastic",
+        greenery=4,
+        roses=0,
+        daisies=2,
+        time_minutes=20,
+        price=18.50,
+        demand=175,
+    ),
+    "Be-Leaf in Yourself": BouquetConfig(
+        name="Be-Leaf in Yourself",
+        greenery=2,
+        roses=1,
+        daisies=3,
+        time_minutes=30,
+        price=17.75,
+        demand=100,
+    ),
+    "You Rose to the Occasion": BouquetConfig(
+        name="You Rose to the Occasion",
+        greenery=2,
+        roses=4,
+        daisies=2,
+        time_minutes=45,
+        price=32.50,
+        demand=250,
+    ),
+}
+
+
+# Greenhouse / inventory configuration
+
+SUPPLY_CAPACITY = {
     "roses": 200,
     "daisies": 250,
     "greenery": 400,
 }
 
-# 每月折旧比例
-DEPRECIATION = {
+SUPPLY_DEPRECIATION = {
     "roses": 0.40,
     "daisies": 0.15,
     "greenery": 0.05,
 }
 
-# 温室成本（按当前库存数量收）
-GREENHOUSE_COST_PER_BUNCH = {
+SUPPLY_STORAGE_COST = {
     "roses": 1.50,
     "daisies": 0.80,
     "greenery": 0.20,
 }
 
-# 每月需求
-DEMAND_PER_MONTH = {
-    "fern_tastic": 175,
-    "be_leaf": 100,
-    "you_rose": 250,
+
+#Vendor configuration
+
+@dataclass(frozen=True)
+class VendorConfig:
+    name: str
+    roses: float
+    daisies: float
+    greenery: float
+
+
+VENDORS = {
+    0: VendorConfig(
+        name="Evergreen Essentials",
+        roses=2.80,
+        daisies=1.50,
+        greenery=0.95,
+    ),
+    1: VendorConfig(
+        name="FloraGrow Distributors",
+        roses=1.60,
+        daisies=1.20,
+        greenery=1.80,
+    ),
 }
 
-# 售价
-PRICE = {
-    "fern_tastic": 18.50,
-    "be_leaf": 17.75,
-    "you_rose": 32.50,
-}
 
-# 配方与制作时间（分钟）
-RECIPES = {
-    "fern_tastic": {"greenery": 4, "roses": 0, "daisies": 2, "minutes": 20},
-    "be_leaf":     {"greenery": 2, "roses": 1, "daisies": 3, "minutes": 30},
-    "you_rose":    {"greenery": 2, "roses": 4, "daisies": 2, "minutes": 45},
-}
+#Financial & shop configuration
+
+STARTING_CASH = 7500.0
+RENT_PER_MONTH = 800.0
+WAGE_PER_HOUR = 15.50
+HOURS_PER_FLORIST_PER_MONTH = 80
+
+MIN_FLORISTS = 1
+MAX_FLORISTS = 4
+
