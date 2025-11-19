@@ -118,7 +118,7 @@ class FlowerShop:
             removed = self.florists.pop(choice - 1)
             print(f"Removed florist: {removed}")
 
-    # labour & supplies
+    # labour & supplier
 
     def _available_labour_minutes(self) -> int:
         return sum(f.monthly_capacity_minutes() for f in self.florists)
@@ -170,7 +170,7 @@ class FlowerShop:
         return effective_minutes
 
     def _validate_bouquet_plan(self, bouquet_plan: Dict[str, int]) -> bool:
-        # demand check
+        # demand
         for b_name, qty in bouquet_plan.items():
             if qty < 0:
                 print("Error: bouquet quantities cannot be negative.")
@@ -180,7 +180,7 @@ class FlowerShop:
                 print(f"Error: {b_name} exceeds demand ({qty} > {demand}).")
                 return False
 
-        # stock check
+        # stock
         needed = self._supplies_needed_for_plan(bouquet_plan)
         if not self.inventory.enough_supplies(needed):
             print("Error: Not enough supplies in the greenhouse to make this plan.")
@@ -188,7 +188,7 @@ class FlowerShop:
             print("Supplies available:", self.inventory.stock)
             return False
 
-        # labour check
+        # labour
         required_minutes = self._required_labour_minutes(bouquet_plan)
         available_minutes = self._available_labour_minutes()
         if required_minutes > available_minutes:

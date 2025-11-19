@@ -8,18 +8,17 @@ def main() -> None:
     print("Welcome to the FlowerShop Simulator!")
     print("---------------------------------------------------------------")
 
-    #  Ask how many months we should simulate (default: 6)
+    # Months
     months = ask_months_to_run(default_months=6)
     shop = FlowerShop()
 
-    #  Run the simulation month by month
+    #  Run the simulation
     for month in range(1, months + 1):
         alive = shop.run_month(month)
         if not alive:
-            # The shop went bankrupt, so we stop
+            # The shop went bankrupt
             break
     else:
-        # This block runs only if the loop never hits the break above
         print("***********************************************************************")
         print("Congratulations! You have completed the simulation!")
 

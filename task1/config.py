@@ -1,18 +1,25 @@
-from dataclasses import dataclass
 from typing import Dict
 
+# Bouquets
 
-#Bouquet configuration
-
-@dataclass(frozen=True)
 class BouquetConfig:
-    name: str
-    greenery: int
-    roses: int
-    daisies: int
-    time_minutes: int
-    price: float
-    demand: int
+    def __init__(
+        self,
+        name: str,
+        greenery: int,
+        roses: int,
+        daisies: int,
+        time_minutes: int,
+        price: float,
+        demand: int,
+    ):
+        self.name = name
+        self.greenery = greenery
+        self.roses = roses
+        self.daisies = daisies
+        self.time_minutes = time_minutes
+        self.price = price
+        self.demand = demand
 
 
 BOUQUET_CONFIGS: Dict[str, BouquetConfig] = {
@@ -46,7 +53,7 @@ BOUQUET_CONFIGS: Dict[str, BouquetConfig] = {
 }
 
 
-# Greenhouse / inventory configuration
+# Greenhouses
 
 SUPPLY_CAPACITY = {
     "roses": 200,
@@ -67,14 +74,14 @@ SUPPLY_STORAGE_COST = {
 }
 
 
-#Vendor configuration
+# Vendors
 
-@dataclass(frozen=True)
 class VendorConfig:
-    name: str
-    roses: float
-    daisies: float
-    greenery: float
+    def __init__(self, name: str, roses: float, daisies: float, greenery: float):
+        self.name = name
+        self.roses = roses
+        self.daisies = daisies
+        self.greenery = greenery
 
 
 VENDORS = {
@@ -93,7 +100,7 @@ VENDORS = {
 }
 
 
-#Financial & shop configuration
+# Financial / Florists configuration
 
 STARTING_CASH = 7500.0
 RENT_PER_MONTH = 800.0
@@ -102,4 +109,3 @@ HOURS_PER_FLORIST_PER_MONTH = 80
 
 MIN_FLORISTS = 1
 MAX_FLORISTS = 4
-
