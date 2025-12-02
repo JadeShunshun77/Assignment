@@ -53,7 +53,7 @@ BOUQUET_CONFIGS: Dict[str, BouquetConfig] = {
 }
 
 
-# Greenhouses
+#Greenhouses
 
 SUPPLY_CAPACITY = {
     "roses": 200,

@@ -1,4 +1,4 @@
-from typing import Optional
+from  typing import Optional
 
 def ask_int(
     prompt: str,

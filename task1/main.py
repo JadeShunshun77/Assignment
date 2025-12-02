@@ -15,8 +15,8 @@ def main() -> None:
     #  Run the simulation
     for month in range(1, months + 1):
         alive = shop.run_month(month)
+        # The shop went bankrupt
         if not alive:
-            # The shop went bankrupt
             break
     else:
         print("***********************************************************************")

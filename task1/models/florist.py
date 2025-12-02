@@ -3,7 +3,6 @@ from typing import Optional
 class Florist:
     HOURS_PER_MONTH = 80
     MINUTES_PER_HOUR = 60
-
     def __init__(self, name: str, speciality: Optional[str] = None):
         self.name = name
         self.speciality = speciality

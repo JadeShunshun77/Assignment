@@ -210,17 +210,6 @@ class FlowerShop:
                 f"Greenery £{v.greenery}/bunch"
             )
 
-    def _estimate_restock_cost_for_vendor(self, vendor_idx: int) -> float:
-        vendor = VENDORS[vendor_idx]
-        total = 0.0
-        for item, cap in self.inventory.capacity.items():
-            current = self.inventory.stock[item]
-            need = cap - current
-            if need > 0:
-                unit_price = getattr(vendor, item)
-                total += need * unit_price
-        return total
-
     # main monthly loop
 
     def run_month(self, month_number: int) -> bool:
@@ -338,27 +327,37 @@ class FlowerShop:
 
         self.inventory.apply_depreciation()
 
-        # restock
-        print("The greenhouse has spare capacity and needs to be restocked...")
+        stock_after_depr = self.inventory.stock.copy()
 
-        cost_by_vendor = []
-        for idx, vendor in VENDORS.items():
-            est_cost = self._estimate_restock_cost_for_vendor(idx)
-            cost_by_vendor.append(est_cost)
-            print(f"  Option {idx}: {vendor.name}  → estimated restock cost £{est_cost:.2f}")
+        print("The greenhouse has spare capacity and needs to be restocked...") # restock
 
-        choice = ask_int(
-            f"Choose a vendor for all supplies this month (0–{len(VENDORS) - 1}): ",
-            min_val=0,
-            max_val=len(VENDORS) - 1,
-        )
+        prices: Dict[str, float] = {}
 
-        chosen_vendor = VENDORS[choice]
-        prices = {
-            "roses": chosen_vendor.roses,
-            "daisies": chosen_vendor.daisies,
-            "greenery": chosen_vendor.greenery,
-        }
+        for item_key, item_label in [
+            ("roses", "roses"),
+            ("daisies", "daisies"),
+            ("greenery", "greenery"),
+        ]:
+            while True:
+                print(
+                    f"Do you want to purchase {item_label} from Evergreen Essentials (0), or FloraGrow "
+                    f"Distributors (1)?"
+                )
+                print("Press (i) if you would like to see price information from either supplier.")
+                ans = input("Input: ").strip().lower()
+
+                if ans == "i":
+                    self._print_vendor_info()
+                    continue
+
+                if ans in ("0", "1"):
+                    vendor_idx = int(ans)
+                    vendor = VENDORS[vendor_idx]
+                    unit_price = getattr(vendor, item_key)
+                    prices[item_key] = unit_price
+                    break
+
+                print("Invalid input. Please enter 0, 1, or 'i'.")
 
         restock_cost = self.inventory.restock_to_full(prices)
         self.cash -= restock_cost
@@ -391,10 +390,10 @@ class FlowerShop:
         print(f"  {'List:':23} {self.florists}")
         print("-" * 60)
 
-        print("GREENHOUSE STOCK")
-        print(f"  Roses:     {self.inventory.stock['roses']}")
-        print(f"  Daisies:   {self.inventory.stock['daisies']}")
-        print(f"  Greenery:  {self.inventory.stock['greenery']}")
+        print("GREENHOUSE STOCK (after sales and depreciation, BEFORE restock)")
+        print(f"  Roses:     {stock_after_depr['roses']}")
+        print(f"  Daisies:   {stock_after_depr['daisies']}")
+        print(f"  Greenery:  {stock_after_depr['greenery']}")
         print("=" * 60 + "\n")
 
         if self.cash < 0:
