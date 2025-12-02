@@ -1,6 +1,5 @@
-from Assignment.task1.prompts import ask_months_to_run
-from Assignment.task1.shop import FlowerShop
-
+from prompts import ask_months_to_run
+from shop import FlowerShop
 
 def main() -> None:
     # Initial greeting
@@ -12,7 +11,7 @@ def main() -> None:
     months = ask_months_to_run(default_months=6)
     shop = FlowerShop()
 
-    #  Run the simulation
+    # Run the simulation
     for month in range(1, months + 1):
         alive = shop.run_month(month)
         # The shop went bankrupt
