@@ -1,5 +1,14 @@
 class Bouquet:
-    def __init__(self, name, greenery, roses, daisies, time_minutes, price, demand):
+    def __init__(
+        self,
+        name,
+        greenery,
+        roses,
+        daisies,
+        time_minutes,
+        price,
+        demand,
+    ):
         self.name = name
         self.greenery = greenery
         self.roses = roses
@@ -17,3 +26,6 @@ class Bouquet:
 
     def revenue(self, quantity):
         return self.price * quantity
+
+    def __repr__(self):
+        return f"Bouquet({self.name})"

@@ -9,10 +9,10 @@ from config import (
     MIN_FLORISTS,
     MAX_FLORISTS,
 )
-from .bouquet import Bouquet
-from .florist import Florist
-from .inventory import Inventory
-from ioutils.prompts import ask_int, ask_yes_no
+from bouquet import Bouquet
+from florist import Florist
+from inventory import Inventory
+from prompts import ask_int, ask_yes_no
 
 
 class FlowerShop:

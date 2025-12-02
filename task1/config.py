@@ -1,7 +1,6 @@
 from typing import Dict
 
 # Bouquets
-
 class BouquetConfig:
     def __init__(
         self,
@@ -54,7 +53,6 @@ BOUQUET_CONFIGS: Dict[str, BouquetConfig] = {
 
 
 #Greenhouses
-
 SUPPLY_CAPACITY = {
     "roses": 200,
     "daisies": 250,
@@ -75,7 +73,6 @@ SUPPLY_STORAGE_COST = {
 
 
 # Vendors
-
 class VendorConfig:
     def __init__(self, name: str, roses: float, daisies: float, greenery: float):
         self.name = name
@@ -101,7 +98,6 @@ VENDORS = {
 
 
 # Financial / Florists configuration
-
 STARTING_CASH = 7500.0
 RENT_PER_MONTH = 800.0
 WAGE_PER_HOUR = 15.50

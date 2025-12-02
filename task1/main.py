@@ -1,5 +1,5 @@
-from ioutils.prompts import ask_months_to_run
-from models.shop import FlowerShop
+from Assignment.task1.prompts import ask_months_to_run
+from Assignment.task1.shop import FlowerShop
 
 
 def main() -> None:

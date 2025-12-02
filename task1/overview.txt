@@ -1,12 +1,9 @@
-sdpa_flower_shop/
+sdpa_task1/
 ├─ main.py
 ├─ config.py
-├─ models/
-│  ├─ __init__.py
-│  ├─ bouquet.py
-│  ├─ florist.py
-│  ├─ inventory.py
-│  └─ shop.py
-└─ ioutils/
-   ├─ __init__.py
-   └─ prompts.py
+├─ bouquet.py
+├─ florist.py
+├─ inventory.py
+├─ shop.py
+└─ prompts.py
+
