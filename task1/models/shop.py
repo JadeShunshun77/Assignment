@@ -1,24 +1,18 @@
 from typing import Dict, List
-
-from Assignment.task1.config import (
-     BOUQUET_CONFIGS,
-     VENDORS,
-     STARTING_CASH,
-     RENT_PER_MONTH,
-     WAGE_PER_HOUR,
-     HOURS_PER_FLORIST_PER_MONTH,
-     MIN_FLORISTS,
-     MAX_FLORISTS,
+from config import (
+    BOUQUET_CONFIGS,
+    VENDORS,
+    STARTING_CASH,
+    RENT_PER_MONTH,
+    WAGE_PER_HOUR,
+    HOURS_PER_FLORIST_PER_MONTH,
+    MIN_FLORISTS,
+    MAX_FLORISTS,
 )
 from .bouquet import Bouquet
 from .florist import Florist
 from .inventory import Inventory
 from ioutils.prompts import ask_int, ask_yes_no
-
-
-
-
-
 
 class FlowerShop:
     def __init__(self):
@@ -39,12 +33,10 @@ class FlowerShop:
         self.florists: List[Florist] = []
 
     # helpers
-
     def _florist_names(self) -> List[str]:
         return [f.name for f in self.florists]
 
     # hiring &  firing
-
     def hire_florists_interactive(self) -> None:
         current = len(self.florists)
         remaining_slots = MAX_FLORISTS - current
@@ -119,7 +111,6 @@ class FlowerShop:
             print(f"Removed florist: {removed}")
 
     # labour & supplier
-
     def _available_labour_minutes(self) -> int:
         return sum(f.monthly_capacity_minutes() for f in self.florists)
 
@@ -199,7 +190,6 @@ class FlowerShop:
         return True
 
     # vendors
-
     def _print_vendor_info(self) -> None:
         print("Supplier price information:")
         for idx, v in VENDORS.items():
@@ -211,7 +201,6 @@ class FlowerShop:
             )
 
     # main monthly loop
-
     def run_month(self, month_number: int) -> bool:
         print(f"Month: {month_number}")
         print("Before the month starts, there are some owner actions for you to carry out.")
@@ -299,7 +288,6 @@ class FlowerShop:
 
         # income & fixed costs
         start_cash = self.cash
-
         income = self._revenue_for_plan(bouquet_plan)
         self.cash += income
 
