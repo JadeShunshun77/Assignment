@@ -1,4 +1,4 @@
-sdpa_task1/
+SDPA_assignment_task1/
 ├─ main.py
 ├─ config.py
 ├─ bouquet.py
@@ -6,4 +6,3 @@ sdpa_task1/
 ├─ inventory.py
 ├─ shop.py
 └─ prompts.py
-

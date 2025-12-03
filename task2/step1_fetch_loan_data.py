@@ -33,6 +33,12 @@ def fetch_indicator_for_countries(indicator_code: str) -> pd.DataFrame:
         if len(data) < 2:
             continue
         observations = data[1]
+        try:
+            r = requests.get(url, timeout=10)
+            r.raise_for_status()
+        except Exception as e:
+            print("Warning:", e)
+            continue
 
         for obs in observations:
             rows.append({
@@ -62,12 +68,12 @@ def build_loan_dataset() -> pd.DataFrame:
     df_merged = df_merged.sort_values(["country_code", "year"])
     return df_merged
 
-
 if __name__ == "__main__":
     df = build_loan_dataset()
-    print("数据维度（行, 列）：", df.shape)
+    print("Dataset shape (rows, columns):", df.shape)
     print(df.head())
 
     output_path = "loan_worldbank_dataset.csv"
     df.to_csv(output_path, index=False, encoding="utf-8-sig")
-    print(f"已保存到 {output_path}")
+    print(f"Saved to {output_path}")
+

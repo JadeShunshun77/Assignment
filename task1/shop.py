@@ -33,7 +33,6 @@ class FlowerShop:
         }
         self.florists: List[Florist] = []
 
-    # helpers
     def _florist_names(self) -> List[str]:
         return [f.name for f in self.florists]
 
