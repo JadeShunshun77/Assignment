@@ -279,15 +279,15 @@ The notebook implements the rest of the workflow.
 Part 1 uses **no external libraries** beyond the Python standard library.
 
 Part 2 requires:
-
-- pandas
-- requests
-- matplotlib
-- seaborn
-- scikit-learn
-- statsmodels
-- jupyter (for running the notebook)
-
+```
+pandas
+requests
+matplotlib
+seaborn
+scikit-learn
+statsmodels
+jupyter (for running the notebook)
+```
 Install with:
 
 ```bash
