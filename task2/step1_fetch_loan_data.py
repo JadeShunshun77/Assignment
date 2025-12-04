@@ -27,18 +27,17 @@ def fetch_indicator_for_countries(indicator_code: str) -> pd.DataFrame:
         )
         print(f"Fetching {indicator_code} for {country_code} ...")
 
-        r = requests.get(url)
-        r.raise_for_status()
-        data = r.json()
-        if len(data) < 2:
-            continue
-        observations = data[1]
         try:
             r = requests.get(url, timeout=10)
             r.raise_for_status()
         except Exception as e:
             print("Warning:", e)
             continue
+
+        data = r.json()
+        if len(data) < 2:
+            continue
+        observations = data[1]
 
         for obs in observations:
             rows.append({
@@ -48,6 +47,7 @@ def fetch_indicator_for_countries(indicator_code: str) -> pd.DataFrame:
                 indicator_code: pd.to_numeric(obs["value"], errors="coerce"),
             })
     return pd.DataFrame(rows)
+
 
 
 def build_loan_dataset() -> pd.DataFrame:

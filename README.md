@@ -268,10 +268,6 @@ The notebook implements the rest of the workflow.
 ### Step 5 – Conclusions
 
 - Summarise the main findings
-- Interpret the signs/magnitudes of coefficients
-- Discuss limitations (low R², omitted variables, small sample of countries)
-- Suggest potential extensions
-
 ---
 
 ## 3.4 Required External Libraries (Part 2 only)
